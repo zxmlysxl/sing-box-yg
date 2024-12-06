@@ -949,10 +949,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
                 "detour": "direct"
             },
             {
-                "address": "rcode://refused",
-                "tag": "block"
-            },
-            {
                 "tag": "dns_fakeip",
                 "address": "fakeip"
             }
@@ -999,8 +995,11 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "inbounds": [
     {
       "type": "tun",
-      "inet4_address": "172.19.0.1/30",
-      "inet6_address": "fd00::1/126",
+           "tag": "tun-in",
+	  "address": [
+      "172.19.0.1/30",
+	  "fd00::1/126"
+      ],
       "auto_route": true,
       "strict_route": true,
       "sniff": true,
@@ -1224,14 +1223,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "type": "direct"
     },
     {
-      "tag": "block",
-      "type": "block"
-    },
-    {
-      "tag": "dns-out",
-      "type": "dns"
-    },
-    {
       "tag": "auto",
       "type": "urltest",
       "outbounds": [
@@ -1281,8 +1272,17 @@ cat > /etc/s-box/sing_box_client.json <<EOF
     "final": "select",
     "rules": [
       {
-        "outbound": "dns-out",
-        "protocol": "dns"
+      "inbound": "tun-in",
+      "action": "sniff"
+      },
+      {
+      "protocol": "dns",
+      "action": "hijack-dns"
+      },
+      {
+      "port": 443,
+      "network": "udp",
+      "action": "reject"
       },
       {
         "clash_mode": "Direct",
@@ -1558,10 +1558,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
                 "detour": "direct"
             },
             {
-                "address": "rcode://refused",
-                "tag": "block"
-            },
-            {
                 "tag": "dns_fakeip",
                 "address": "fakeip"
             }
@@ -1608,8 +1604,11 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "inbounds": [
     {
       "type": "tun",
-      "inet4_address": "172.19.0.1/30",
-      "inet6_address": "fd00::1/126",
+           "tag": "tun-in",
+	  "address": [
+      "172.19.0.1/30",
+	  "fd00::1/126"
+      ],
       "auto_route": true,
       "strict_route": true,
       "sniff": true,
@@ -1777,14 +1776,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "type": "direct"
     },
     {
-      "tag": "block",
-      "type": "block"
-    },
-    {
-      "tag": "dns-out",
-      "type": "dns"
-    },
-    {
       "tag": "auto",
       "type": "urltest",
       "outbounds": [
@@ -1832,8 +1823,17 @@ cat > /etc/s-box/sing_box_client.json <<EOF
     "final": "select",
     "rules": [
       {
-        "outbound": "dns-out",
-        "protocol": "dns"
+      "inbound": "tun-in",
+      "action": "sniff"
+      },
+      {
+      "protocol": "dns",
+      "action": "hijack-dns"
+      },
+      {
+      "port": 443,
+      "network": "udp",
+      "action": "reject"
       },
       {
         "clash_mode": "Direct",
@@ -2077,10 +2077,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
                 "detour": "direct"
             },
             {
-                "address": "rcode://refused",
-                "tag": "block"
-            },
-            {
                 "tag": "dns_fakeip",
                 "address": "fakeip"
             }
@@ -2127,8 +2123,11 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "inbounds": [
     {
       "type": "tun",
-      "inet4_address": "172.19.0.1/30",
-      "inet6_address": "fd00::1/126",
+     "tag": "tun-in",
+	  "address": [
+      "172.19.0.1/30",
+	  "fd00::1/126"
+      ],
       "auto_route": true,
       "strict_route": true,
       "sniff": true,
@@ -2296,14 +2295,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "type": "direct"
     },
     {
-      "tag": "block",
-      "type": "block"
-    },
-    {
-      "tag": "dns-out",
-      "type": "dns"
-    },
-    {
       "tag": "auto",
       "type": "urltest",
       "outbounds": [
@@ -2351,8 +2342,17 @@ cat > /etc/s-box/sing_box_client.json <<EOF
     "final": "select",
     "rules": [
       {
-        "outbound": "dns-out",
-        "protocol": "dns"
+      "inbound": "tun-in",
+      "action": "sniff"
+      },
+      {
+      "protocol": "dns",
+      "action": "hijack-dns"
+      },
+      {
+      "port": 443,
+      "network": "udp",
+      "action": "reject"
       },
       {
         "clash_mode": "Direct",
@@ -2594,10 +2594,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
                 "detour": "direct"
             },
             {
-                "address": "rcode://refused",
-                "tag": "block"
-            },
-            {
                 "tag": "dns_fakeip",
                 "address": "fakeip"
             }
@@ -2644,8 +2640,11 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "inbounds": [
     {
       "type": "tun",
-      "inet4_address": "172.19.0.1/30",
-      "inet6_address": "fd00::1/126",
+     "tag": "tun-in",
+	  "address": [
+      "172.19.0.1/30",
+	  "fd00::1/126"
+      ],
       "auto_route": true,
       "strict_route": true,
       "sniff": true,
@@ -2757,14 +2756,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "type": "direct"
     },
     {
-      "tag": "block",
-      "type": "block"
-    },
-    {
-      "tag": "dns-out",
-      "type": "dns"
-    },
-    {
       "tag": "auto",
       "type": "urltest",
       "outbounds": [
@@ -2810,8 +2801,17 @@ cat > /etc/s-box/sing_box_client.json <<EOF
     "final": "select",
     "rules": [
       {
-        "outbound": "dns-out",
-        "protocol": "dns"
+      "inbound": "tun-in",
+      "action": "sniff"
+      },
+      {
+      "protocol": "dns",
+      "action": "hijack-dns"
+      },
+      {
+      "port": 443,
+      "network": "udp",
+      "action": "reject"
       },
       {
         "clash_mode": "Direct",
