@@ -124,7 +124,7 @@ uninstall_singbox() {
   reading "\n确定要卸载吗？【y/n】: " choice
     case "$choice" in
        [Yy])
-          ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk '{print $2}' | xargs -r kill -9 2>/dev/null
+          bash -c 'ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk "{print \$2}" | xargs -r kill -9 >/dev/null 2>&1' >/dev/null 2>&1
           rm -rf $WORKDIR serv00.sh serv00keep.sh
 	  crontab -l | grep -v "serv00keep" >rmcron
           crontab rmcron >/dev/null 2>&1
@@ -141,7 +141,7 @@ kill_all_tasks() {
 reading "\n清理所有进程并清空所有安装内容，将退出ssh连接，确定继续清理吗？【y/n】: " choice
   case "$choice" in
     [Yy]) 
-    ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk '{print $2}' | xargs -r kill -9 2>/dev/null
+    bash -c 'ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk "{print \$2}" | xargs -r kill -9 >/dev/null 2>&1' >/dev/null 2>&1
     crontab -l | grep -v "serv00keep" >rmcron
     crontab rmcron >/dev/null 2>&1
     rm rmcron
@@ -1103,8 +1103,7 @@ menu() {
    green "甬哥Blogger博客 ：ygkkk.blogspot.com"
    green "甬哥YouTube频道 ：www.youtube.com/@ygkkk"
    green "一键三协议共存：vless-reality、Vmess-ws(Argo)、hysteria2"
-   green "脚本使用视频教程：https://youtu.be/2VF9D6z2z7w"
-   green "当前脚本版本：V24.12.27  快捷方式：bash serv00.sh"
+   green "当前脚本版本：V25.1.8  快捷方式：bash serv00.sh"
    echo "========================================================="
    green  "1. 安装sing-box"
    echo   "---------------------------------------------------------"
@@ -1147,11 +1146,24 @@ cat $WORKDIR/ip.txt
 echo
 if [[ -e $WORKDIR/list.txt ]]; then
 green "已安装sing-box"
-ps aux | grep '[c]onfig' > /dev/null && green "主进程运行正常" || yellow "主进程启动中……2分钟后可再次进入脚本查看"
+ps aux | grep '[c]onfig' > /dev/null && green "主进程运行正常" || yellow "主进程启动中…………2分钟后可再次进入脚本查看"
 if [ -f "$WORKDIR/boot.log" ] && grep -q "trycloudflare.com" "$WORKDIR/boot.log" 2>/dev/null && ps aux | grep [l]ocalhost > /dev/null; then
-green "当前Argo临时域名：$(grep -oE 'https://[[:alnum:]+\.-]+\.trycloudflare\.com' $WORKDIR/boot.log 2>/dev/null | sed 's@https://@@')"
-elif ps aux | grep [t]oken > /dev/null; then
-green "当前Argo固定域名：$(cat $WORKDIR/gdym.log 2>/dev/null)"
+argosl=$(grep -oE 'https://[[:alnum:]+\.-]+\.trycloudflare\.com' $WORKDIR/boot.log 2>/dev/null | sed 's@https://@@')
+checkhttp=$(curl -o /dev/null -s -w "%{http_code}\n" "https://$argosl")
+[ "$checkhttp" -eq 404 ] && check="域名有效" || check="域名可能无效"
+green "当前Argo临时域名：$argosl  $check"
+fi
+if [ -f "$WORKDIR/boot.log" ] && ! ps aux | grep [l]ocalhost > /dev/null; then
+yellow "当前Argo临时域名暂时不存在，后台会继续生成有效的临时域名，稍后可再次进入脚本查看"
+fi
+if ps aux | grep [t]oken > /dev/null; then
+argogd=$(cat $WORKDIR/gdym.log 2>/dev/null)
+checkhttp=$(curl -o /dev/null -s -w "%{http_code}\n" "https://$argogd")
+[ "$checkhttp" -eq 404 ] && check="域名有效" || check="域名可能无效"
+green "当前Argo固定域名：$argogd  $check"
+fi
+if [ ! -f "$WORKDIR/boot.log" ] && ! ps aux | grep [t]oken > /dev/null; then
+yellow "当前Argo固定域名：$(cat $WORKDIR/gdym.log 2>/dev/null)，请检查相关参数是否输入有误，建议卸载重装"
 fi
 if ! crontab -l 2>/dev/null | grep -q 'serv00keep'; then
 if [ -f "$WORKDIR/boot.log" ] || grep -q "trycloudflare.com" "$WORKDIR/boot.log" 2>/dev/null; then
@@ -1160,7 +1172,8 @@ else
 check_process="! ps aux | grep '[c]onfig' > /dev/null || ! ps aux | grep [t]oken > /dev/null"
 fi
 (crontab -l 2>/dev/null; echo "*/2 * * * * if $check_process; then /bin/bash serv00keep.sh; fi") | crontab -
-yellow "Cron保活可能被重置清空！现已修复成功"
+yellow "发现Cron保活可能被重置清空！现已修复成功！"
+yellow "主进程与Argo进程启动中…………2分钟后可再次进入脚本查看"
 else
 green "Cron保活运行正常"
 fi
