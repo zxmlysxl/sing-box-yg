@@ -347,11 +347,13 @@ if [ -e "$(basename "${FILE_MAP[bot]}")" ]; then
    echo "$(basename "${FILE_MAP[bot]}")" > ag.txt
    agg=$(cat ag.txt)
     if [[ $ARGO_AUTH =~ ^[A-Z0-9a-z=]{120,250}$ ]]; then
-      args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 run --token ${ARGO_AUTH}"
+      #args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 run --token ${ARGO_AUTH}"
+      args="tunnel --no-autoupdate run --token ${ARGO_AUTH}"
     elif [[ $ARGO_AUTH =~ TunnelSecret ]]; then
       args="tunnel --edge-ip-version auto --config tunnel.yml run"
     else
-     args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 --logfile boot.log --loglevel info --url http://localhost:$vmess_port"
+     #args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 --logfile boot.log --loglevel info --url http://localhost:$vmess_port"
+     args="tunnel --url http://localhost:$vmess_port --no-autoupdate --logfile boot.log --loglevel info"
     fi
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
@@ -979,12 +981,12 @@ cat list.txt
 echo "-------------------------------------------------------------------------------------------------"
 sleep 2
 echo
-echo "五、查看sing-box订阅配置文件"
+echo "五、查看Clash-meta订阅配置文件"
 cat clash_meta.yaml
 echo "-------------------------------------------------------------------------------------------------"
 sleep 2
 echo
-echo "六、查看clash-meta订阅配置文件"
+echo "六、查看Sing-box订阅配置文件"
 cat sing_box.json
 echo
 echo "-------------------------------------------------------------------------------------------------"

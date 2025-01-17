@@ -125,7 +125,7 @@ uninstall_singbox() {
     case "$choice" in
        [Yy])
           bash -c 'ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk "{print \$2}" | xargs -r kill -9 >/dev/null 2>&1' >/dev/null 2>&1
-          rm -rf $WORKDIR serv00.sh serv00keep.sh
+          rm -rf domains serv00.sh serv00keep.sh
 	  crontab -l | grep -v "serv00keep" >rmcron
           crontab rmcron >/dev/null 2>&1
           rm rmcron
@@ -412,16 +412,18 @@ if [ -e "$(basename ${FILE_MAP[bot]})" ]; then
    agg=$(cat ag.txt)
     rm -rf boot.log
     if [[ $ARGO_AUTH =~ ^[A-Z0-9a-z=]{120,250}$ ]]; then
-      args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 run --token ${ARGO_AUTH}"
+      #args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 run --token ${ARGO_AUTH}"
+      args="tunnel --no-autoupdate run --token ${ARGO_AUTH}"
     elif [[ $ARGO_AUTH =~ TunnelSecret ]]; then
       args="tunnel --edge-ip-version auto --config tunnel.yml run"
     else
-     args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 --logfile boot.log --loglevel info --url http://localhost:$vmess_port"
+     #args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 --logfile boot.log --loglevel info --url http://localhost:$vmess_port"
+     args="tunnel --url http://localhost:$vmess_port --no-autoupdate --logfile boot.log --loglevel info"
     fi
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Argo进程已启动"
 else
     red "$agg Argo进程未启动, 重启中..."
     pkill -x "$agg"
@@ -1103,7 +1105,7 @@ menu() {
    green "甬哥Blogger博客 ：ygkkk.blogspot.com"
    green "甬哥YouTube频道 ：www.youtube.com/@ygkkk"
    green "一键三协议共存：vless-reality、Vmess-ws(Argo)、hysteria2"
-   green "当前脚本版本：V25.1.8  快捷方式：bash serv00.sh"
+   green "当前脚本版本：V25.1.12  快捷方式：bash serv00.sh"
    echo "========================================================="
    green  "1. 安装sing-box"
    echo   "---------------------------------------------------------"
