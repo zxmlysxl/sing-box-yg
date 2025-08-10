@@ -156,13 +156,16 @@ v4orv6(){
 if [ -z $(curl -s4m5 icanhazip.com -k) ]; then
 echo
 red "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-yellow "检测到 纯IPV6 VPS，添加DNS64"
+yellow "检测到 纯IPV6 VPS，添加NAT64"
 echo -e "nameserver 2a00:1098:2b::1\nnameserver 2a00:1098:2c::1\nnameserver 2a01:4f8:c2c:123f::1" > /etc/resolv.conf
-endip=2606:4700:d0::a29f:c101
 ipv=prefer_ipv6
 else
-endip=162.159.192.1
 ipv=prefer_ipv4
+fi
+if [ -n $(curl -s6m5 icanhazip.com -k) ]; then
+endip=2606:4700:d0::a29f:c101
+else
+endip=162.159.192.1
 fi
 }
 warpcheck
@@ -1074,10 +1077,10 @@ vl_link="vless://$uuid@$server_ip:$vl_port?encryption=none&flow=xtls-rprx-vision
 echo "$vl_link" > /etc/s-box/vl_reality.txt
 red "🚀【 vless-reality-vision 】节点信息如下：" && sleep 2
 echo
-echo "分享链接【v2rayn、v2rayng、nekobox、小火箭shadowrocket】"
+echo "分享链接【v2ran(切换singbox内核)、nekobox、小火箭shadowrocket】"
 echo -e "${yellow}$vl_link${plain}"
 echo
-echo "二维码【v2rayn、v2rayng、nekobox、小火箭shadowrocket】"
+echo "二维码【v2ran(切换singbox内核)、nekobox、小火箭shadowrocket】"
 qrencode -o - -t ANSIUTF8 "$(cat /etc/s-box/vl_reality.txt)"
 white "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo
@@ -1290,7 +1293,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "server": "$server_ipcl",
       "server_port": $vl_port,
       "uuid": "$uuid",
-      "packet_encoding": "xudp",
       "flow": "xtls-rprx-vision",
       "tls": {
         "enabled": true,
@@ -1897,7 +1899,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "server": "$server_ipcl",
       "server_port": $vl_port,
       "uuid": "$uuid",
-      "packet_encoding": "xudp",
       "flow": "xtls-rprx-vision",
       "tls": {
         "enabled": true,
@@ -2416,7 +2417,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "server": "$server_ipcl",
       "server_port": $vl_port,
       "uuid": "$uuid",
-      "packet_encoding": "xudp",
       "flow": "xtls-rprx-vision",
       "tls": {
         "enabled": true,
@@ -2931,7 +2931,6 @@ cat > /etc/s-box/sing_box_client.json <<EOF
       "server": "$server_ipcl",
       "server_port": $vl_port,
       "uuid": "$uuid",
-      "packet_encoding": "xudp",
       "flow": "xtls-rprx-vision",
       "tls": {
         "enabled": true,
@@ -3854,7 +3853,7 @@ message_text_m10=$(echo "$m10")
 message_text_m11=$(echo "$m11")
 MODE=HTML
 URL="https://api.telegram.org/bottelegram_token/sendMessage"
-res=$(timeout 20s curl -s -X POST $URL -d chat_id=telegram_id  -d parse_mode=${MODE} --data-urlencode "text=🚀【 Vless-reality-vision 分享链接 】：支持v2rayng、nekobox "$'"'"'\n\n'"'"'"${message_text_m1}")
+res=$(timeout 20s curl -s -X POST $URL -d chat_id=telegram_id  -d parse_mode=${MODE} --data-urlencode "text=🚀【 Vless-reality-vision 分享链接 】：支持nekobox "$'"'"'\n\n'"'"'"${message_text_m1}")
 if [[ -f /etc/s-box/vm_ws.txt ]]; then
 res=$(timeout 20s curl -s -X POST $URL -d chat_id=telegram_id  -d parse_mode=${MODE} --data-urlencode "text=🚀【 Vmess-ws 分享链接 】：支持v2rayng、nekobox "$'"'"'\n\n'"'"'"${message_text_m2}")
 fi
@@ -3885,7 +3884,7 @@ else
 res=$(timeout 20s curl -s -X POST $URL -d chat_id=telegram_id  -d parse_mode=${MODE} --data-urlencode "text=🚀【 Clash-meta 配置文件(2段) 】：支持Clash-meta相关客户端 "$'"'"'\n\n'"'"'"${message_text_m8}")
 res=$(timeout 20s curl -s -X POST $URL -d chat_id=telegram_id  -d parse_mode=${MODE} --data-urlencode "text=${message_text_m8_5}")
 fi
-res=$(timeout 20s curl -s -X POST $URL -d chat_id=telegram_id  -d parse_mode=${MODE} --data-urlencode "text=🚀【 四合一协议聚合订阅链接 】：支持v2rayng、nekobox "$'"'"'\n\n'"'"'"${message_text_m11}")
+res=$(timeout 20s curl -s -X POST $URL -d chat_id=telegram_id  -d parse_mode=${MODE} --data-urlencode "text=🚀【 四合一协议聚合订阅链接 】：支持nekobox "$'"'"'\n\n'"'"'"${message_text_m11}")
 
 if [ $? == 124 ];then
 echo TG_api请求超时,请检查网络是否重启完成并是否能够访问TG
@@ -4088,17 +4087,21 @@ echo
 warpwg(){
 warpcode(){
 reg(){
-keypair=$(openssl genpkey -algorithm X25519|openssl pkey -text -noout)
+keypair=$(openssl genpkey -algorithm X25519 | openssl pkey -text -noout)
 private_key=$(echo "$keypair" | awk '/priv:/{flag=1; next} /pub:/{flag=0} flag' | tr -d '[:space:]' | xxd -r -p | base64)
 public_key=$(echo "$keypair" | awk '/pub:/{flag=1} flag' | tr -d '[:space:]' | xxd -r -p | base64)
-curl -X POST 'https://api.cloudflareclient.com/v0a2158/reg' -sL --tlsv1.3 \
--H 'CF-Client-Version: a-7.21-0721' -H 'Content-Type: application/json' \
--d \
-'{
-"key":"'${public_key}'",
-"tos":"'$(date +"%Y-%m-%dT%H:%M:%S.000Z")'"
-}' \
-| python3 -m json.tool | sed "/\"account_type\"/i\         \"private_key\": \"$private_key\","
+response=$(curl -sL --tlsv1.3 --connect-timeout 3 --max-time 5 \
+-X POST 'https://api.cloudflareclient.com/v0a2158/reg' \
+-H 'CF-Client-Version: a-7.21-0721' \
+-H 'Content-Type: application/json' \
+-d '{
+"key": "'"$public_key"'",
+"tos": "'"$(date -u +'%Y-%m-%dT%H:%M:%S.000Z')"'"
+}')
+if [ -z "$response" ]; then
+return 1
+fi
+echo "$response" | python3 -m json.tool 2>/dev/null | sed "/\"account_type\"/i\         \"private_key\": \"$private_key\","
 }
 reserved(){
 reserved_str=$(echo "$warp_info" | grep 'client_id' | cut -d\" -f4)
@@ -4747,7 +4750,7 @@ echo
 white "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 red "🚀【 四合一聚合订阅 】节点信息如下：" && sleep 2
 echo
-echo "分享链接【v2rayn、v2rayng、nekobox、Karing】"
+echo "分享链接"
 echo -e "${yellow}$baseurl${plain}"
 white "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo
@@ -4824,7 +4827,8 @@ fi
 }
 
 acme(){
-bash <(curl -Ls https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
+#bash <(curl -Ls https://gitlab.com/rwkgyg/acme-script/raw/main/acme.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/acme-yg/main/acme.sh)
 }
 cfwarp(){
 #bash <(curl -Ls https://gitlab.com/rwkgyg/CFwarp/raw/main/CFwarp.sh)
@@ -5075,13 +5079,15 @@ fi
 
 sbsm(){
 echo
-green "关注甬哥YouTube频道：https://www.youtube.com/@ygkkk 了解最新代理协议与翻墙动态"
+green "关注甬哥YouTube频道：https://youtube.com/@ygkkk?sub_confirmation=1 了解最新代理协议与翻墙动态"
 echo
 blue "sing-box-yg脚本视频教程：https://www.youtube.com/playlist?list=PLMgly2AulGG_Affv6skQXWnVqw7XWiPwJ"
 echo
 blue "sing-box-yg脚本博客说明：http://ygkkk.blogspot.com/2023/10/sing-box-yg.html"
 echo
-blue "sing-box-yg脚本项目地址：https://github.com/yonggekkk/x-ui-yg"
+blue "sing-box-yg脚本项目地址：https://github.com/yonggekkk/sing-box-yg"
+echo
+blue "推荐：ArgoSB一键无交互小钢炮脚本项目地址：https://github.com/yonggekkk/ArgoSB"
 echo
 }
 
