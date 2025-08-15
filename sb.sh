@@ -157,13 +157,13 @@ if [ -z $(curl -s4m5 icanhazip.com -k) ]; then
 echo
 red "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 yellow "检测到 纯IPV6 VPS，添加NAT64"
-echo -e "nameserver 2a00:1098:2b::1\nnameserver 2a00:1098:2c::1\nnameserver 2a01:4f8:c2c:123f::1" > /etc/resolv.conf
+echo -e "nameserver 2a00:1098:2b::1\nnameserver 2a00:1098:2c::1" > /etc/resolv.conf
 ipv=prefer_ipv6
 else
 ipv=prefer_ipv4
 fi
 if [ -n $(curl -s6m5 icanhazip.com -k) ]; then
-endip=2606:4700:d0::a29f:c101
+endip=2606:4700:d0::a29f:c001
 else
 endip=162.159.192.1
 fi
@@ -3920,7 +3920,7 @@ changeserv(){
 sbactive
 echo
 green "Sing-box配置变更选择如下:"
-readp "1：更换Reality域名伪装地址、切换自签证书与Acme域名证书、开关TLS\n2：更换全协议UUID(密码)、Vmess-Path路径\n3：设置Argo临时隧道、固定隧道\n4：切换IPV4或IPV6的代理优先级\n5：设置Telegram推送节点通知\n6：更换Warp-wireguard出站账户、自动优选对端IP\n7：设置Gitlab订阅分享链接\n8：设置所有Vmess节点的CDN优选地址\n0：返回上层\n请选择【0-8】：" menu
+readp "1：更换Reality域名伪装地址、切换自签证书与Acme域名证书、开关TLS\n2：更换全协议UUID(密码)、Vmess-Path路径\n3：设置Argo临时隧道、固定隧道\n4：切换IPV4或IPV6的代理优先级\n5：设置Telegram推送节点通知\n6：更换Warp-wireguard出站账户\n7：设置Gitlab订阅分享链接\n8：设置所有Vmess节点的CDN优选地址\n0：返回上层\n请选择【0-8】：" menu
 if [ "$menu" = "1" ];then
 changeym
 elif [ "$menu" = "2" ];then
@@ -4158,9 +4158,8 @@ green "Reserved值：$wgres"
 green "对端IP：$wgip:$wgpo"
 echo
 yellow "1：更换warp-wireguard账户"
-yellow "2：自动优选warp-wireguard对端IP"
 yellow "0：返回上层"
-readp "请选择【0-2】：" menu
+readp "请选择【0-1】：" menu
 if [ "$menu" = "1" ]; then
 green "最新随机生成普通warp-wireguard账户如下"
 warpwg
@@ -5003,14 +5002,14 @@ yellow "0：返回上层"
 readp "请选择【0-3】：" menu
 if [ "$menu" = "1" ]; then
 ins
-nohup setsid /etc/s-box/sbwpph -b 127.0.0.1:$port --gool -$sw46 >/dev/null 2>&1 & echo "$!" > /etc/s-box/sbwpphid.log
+nohup setsid /etc/s-box/sbwpph -b 127.0.0.1:$port --gool -$sw46 --endpoint 162.159.192.1:2408 >/dev/null 2>&1 & echo "$!" > /etc/s-box/sbwpphid.log
 green "申请IP中……请稍等……" && sleep 20
 resv1=$(curl -s --socks5 localhost:$port icanhazip.com)
 resv2=$(curl -sx socks5h://localhost:$port icanhazip.com)
 if [[ -z $resv1 && -z $resv2 ]]; then
 red "WARP-plus-Socks5的IP获取失败" && unins && exit
 else
-echo "/etc/s-box/sbwpph -b 127.0.0.1:$port --gool -$sw46 >/dev/null 2>&1" > /etc/s-box/sbwpph.log
+echo "/etc/s-box/sbwpph -b 127.0.0.1:$port --gool -$sw46 --endpoint 162.159.192.1:2408 >/dev/null 2>&1" > /etc/s-box/sbwpph.log
 crontab -l > /tmp/crontab.tmp
 sed -i '/sbwpphid.log/d' /tmp/crontab.tmp
 echo '@reboot /bin/bash -c "nohup setsid $(cat /etc/s-box/sbwpph.log 2>/dev/null) & pid=\$! && echo \$pid > /etc/s-box/sbwpphid.log"' >> /tmp/crontab.tmp
@@ -5055,14 +5054,14 @@ echo '
 美国（US）
 '
 readp "可选择国家地区（输入末尾两个大写字母，如美国，则输入US）：" guojia
-nohup setsid /etc/s-box/sbwpph -b 127.0.0.1:$port --cfon --country $guojia -$sw46 >/dev/null 2>&1 & echo "$!" > /etc/s-box/sbwpphid.log
+nohup setsid /etc/s-box/sbwpph -b 127.0.0.1:$port --cfon --country $guojia -$sw46 --endpoint 162.159.192.1:2408 >/dev/null 2>&1 & echo "$!" > /etc/s-box/sbwpphid.log
 green "申请IP中……请稍等……" && sleep 20
 resv1=$(curl -s --socks5 localhost:$port icanhazip.com)
 resv2=$(curl -sx socks5h://localhost:$port icanhazip.com)
 if [[ -z $resv1 && -z $resv2 ]]; then
 red "WARP-plus-Socks5的IP获取失败，尝试换个国家地区吧" && unins && exit
 else
-echo "/etc/s-box/sbwpph -b 127.0.0.1:$port --cfon --country $guojia -$sw46 >/dev/null 2>&1" > /etc/s-box/sbwpph.log
+echo "/etc/s-box/sbwpph -b 127.0.0.1:$port --cfon --country $guojia -$sw46 --endpoint 162.159.192.1:2408 >/dev/null 2>&1" > /etc/s-box/sbwpph.log
 crontab -l > /tmp/crontab.tmp
 sed -i '/sbwpphid.log/d' /tmp/crontab.tmp
 echo '@reboot /bin/bash -c "nohup setsid $(cat /etc/s-box/sbwpph.log 2>/dev/null) & pid=\$! && echo \$pid > /etc/s-box/sbwpphid.log"' >> /tmp/crontab.tmp
