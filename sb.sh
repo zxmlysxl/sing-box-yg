@@ -71,9 +71,8 @@ if [ ! -f sbyg_update ]; then
 green "首次安装Sing-box-yg脚本必要的依赖……"
 if [[ x"${release}" == x"alpine" ]]; then
 apk update
-apk add wget curl tar jq tzdata openssl expect git socat iproute2 iptables grep coreutils util-linux dcron
+apk add jq openssl iproute2 iputils coreutils expect git socat iptables grep util-linux dcron tar tzdata 
 apk add virt-what
-apk add qrencode
 else
 if [[ $release = Centos && ${vsid} =~ 8 ]]; then
 cd /etc/yum.repos.d/ && mkdir backup && mv *repo backup/ 
@@ -252,9 +251,9 @@ fi
 
 inscertificate(){
 ymzs(){
-ym_vl_re=www.yahoo.com
+ym_vl_re=www.amd.com
 echo
-blue "Vless-reality的SNI域名默认为 www.yahoo.com"
+blue "Vless-reality的SNI域名默认为 www.amd.com"
 blue "Vmess-ws将开启TLS，Hysteria-2、Tuic-v5将使用 $(cat /root/ygkkkca/ca.log 2>/dev/null) 证书，并开启SNI证书验证"
 tlsyn=true
 ym_vm_ws=$(cat /root/ygkkkca/ca.log 2>/dev/null)
@@ -267,9 +266,9 @@ certificatep_tuic='/root/ygkkkca/private.key'
 }
 
 zqzs(){
-ym_vl_re=www.yahoo.com
+ym_vl_re=www.amd.com
 echo
-blue "Vless-reality的SNI域名默认为 www.yahoo.com"
+blue "Vless-reality的SNI域名默认为 www.amd.com"
 blue "Vmess-ws将关闭TLS，Hysteria-2、Tuic-v5将使用bing自签证书，并关闭SNI证书验证"
 tlsyn=false
 ym_vm_ws=www.bing.com
@@ -3460,8 +3459,8 @@ fi
 green "0：返回上层"
 readp "请选择：" menu
 if [ "$menu" = "1" ]; then
-readp "请输入vless-reality域名 (回车使用www.yahoo.com)：" menu
-ym_vl_re=${menu:-www.yahoo.com}
+readp "请输入vless-reality域名 (回车使用www.amd.com)：" menu
+ym_vl_re=${menu:-www.amd.com}
 a=$(sed 's://.*::g' /etc/s-box/sb.json | jq -r '.inbounds[0].tls.server_name')
 b=$(sed 's://.*::g' /etc/s-box/sb.json | jq -r '.inbounds[0].tls.reality.handshake.server')
 c=$(cat /etc/s-box/vl_reality.txt | cut -d'=' -f5 | cut -d'&' -f1)
@@ -5086,7 +5085,9 @@ blue "sing-box-yg脚本博客说明：http://ygkkk.blogspot.com/2023/10/sing-box
 echo
 blue "sing-box-yg脚本项目地址：https://github.com/yonggekkk/sing-box-yg"
 echo
-blue "推荐：ArgoSB一键无交互小钢炮脚本项目地址：https://github.com/yonggekkk/ArgoSB"
+blue "推荐甬哥新品：ArgoSB一键无交互小钢炮脚本"
+blue "支持：AnyTLS、Any-reality、Vless-xhttp-reality、Vless-reality-vision、Shadowsocks-2022、Hysteria2、Tuic、Vmess-ws、Argo临时/固定隧道"
+blue "ArgoSB项目地址：https://github.com/yonggekkk/ArgoSB"
 echo
 }
 
