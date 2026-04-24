@@ -13,6 +13,7 @@ blue(){ echo -e "\033[36m\033[01m$1\033[0m";}
 white(){ echo -e "\033[37m\033[01m$1\033[0m";}
 readp(){ read -p "$(yellow "$1")" $2;}
 [[ $EUID -ne 0 ]] && yellow "请以root模式运行脚本" && exit
+stty erase $'\b' 2>/dev/null || stty erase '^H' 2>/dev/null
 #[[ -e /etc/hosts ]] && grep -qE '^ *172.65.251.78 gitlab.com' /etc/hosts || echo -e '\n172.65.251.78 gitlab.com' >> /etc/hosts
 if [[ -f /etc/redhat-release ]]; then
 release="Centos"
@@ -133,7 +134,8 @@ fi
 v4v6(){
 v4=$(curl -s4m5 icanhazip.com -k)
 v6=$(curl -s6m5 icanhazip.com -k)
-v4dq=$(curl -s4m5 -k https://ip.fm | sed -n 's/.*Location: //p' 2>/dev/null)
+v4dq=$(curl -s4m5 -k https://myip.ipip.net | awk -F'来自于：' '{print $2}' 2>/dev/null)
+#v4dq=$(curl -s4m5 -k https://ip.fm | sed -n 's/.*Location: //p' 2>/dev/null)
 v6dq=$(curl -s6m5 -k https://ip.fm | sed -n 's/.*Location: //p' 2>/dev/null)
 }
 warpcheck(){
@@ -210,7 +212,7 @@ inssb(){
 red "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 green "使用哪个内核版本？"
 yellow "1：使用目前最新正式版内核 (回车默认)"
-yellow "2：使用之前1.10.7正式版内核"
+yellow "2：使用之前1.10.7正式版内核 (支持geosite分流、IP优选级切换，无Anytls协议)"
 readp "请选择【1-2】：" menu
 if [ -z "$menu" ] || [ "$menu" = "1" ] ; then
 sbcore=$(curl -Ls https://github.com/SagerNet/sing-box/releases/latest | grep -oP 'tag/v\K[0-9.]+' | head -n 1)
@@ -1591,7 +1593,7 @@ proxies:
   uuid: $uuid       
   password: $uuid   
   alpn: [h3]
-  disable-sni: true
+  disable-sni: $tu5_ins
   reduce-rtt: true
   udp-relay-mode: native
   congestion-controller: bbr
@@ -3188,13 +3190,16 @@ fi
 echo
 readp "输入自定义的优选IP/域名：" menu
 echo "$menu" > /etc/s-box/cfvmadd_local.txt
+sbshare > /dev/null 2>&1
 green "设置成功，选择主菜单9进行节点配置更新" && sleep 2 && vmesscfadd
 elif  [ "$menu" = "2" ]; then
 rm -rf /etc/s-box/cfymjx.txt
+sbshare > /dev/null 2>&1
 green "重置成功，可选择1重新设置" && sleep 2 && vmesscfadd
 elif  [ "$menu" = "3" ]; then
 readp "输入自定义的优选IP/域名：" menu
 echo "$menu" > /etc/s-box/cfvmadd_argo.txt
+sbshare > /dev/null 2>&1
 green "设置成功，选择主菜单9进行节点配置更新" && sleep 2 && vmesscfadd
 else
 changeserv
