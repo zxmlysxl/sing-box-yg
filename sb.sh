@@ -1529,18 +1529,17 @@ dns:
     - "time.*.gov"
     - "pool.ntp.org"
     - "localhost.work.weixin.qq.com"
-  default-nameserver: ["223.5.5.5", "1.2.4.8"]
+  default-nameserver: ["223.5.5.5", "119.29.29.29"]
   nameserver:
-    - "https://208.67.222.222/dns-query"
     - "https://1.1.1.1/dns-query"
-    - "https://8.8.4.4/dns-query"
+    - "https://8.8.8.8/dns-query"
   proxy-server-nameserver:
     - "https://223.5.5.5/dns-query"
     - "https://doh.pub/dns-query"
-  nameserver-policy:
-    "geosite:private,cn":
-      - "https://223.5.5.5/dns-query"
-      - "https://doh.pub/dns-query"
+nameserver-policy:
+  "geosite:cn":
+     - "https://223.5.5.5/dns-query"
+     - "https://doh.pub/dns-query"
 
 proxies:
 - name: vless-reality-vision-$hostname               
