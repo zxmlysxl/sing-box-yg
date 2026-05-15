@@ -1170,7 +1170,7 @@ echo
 restu5(){
 echo
 white "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-tuic5_link="tuic://$uuid:$uuid@$sb_tu5_ip:$tu5_port?congestion_control=bbr&udp_relay_mode=native&alpn=h3&sni=$tu5_name&insecure=$ins&allowInsecure=$ins#tu5-$hostname"
+tuic5_link="tuic://$uuid:$uuid@$sb_tu5_ip:$tu5_port?congestion_control=bbr&udp_relay_mode=native&alpn=h3&sni=$tu5_name&insecure=$ins&allowInsecure=$ins&allow_insecure=$ins#tu5-$hostname"
 echo "$tuic5_link" > /etc/s-box/tuic5.txt
 red "🚀【 Tuic-v5 】节点信息如下：" && sleep 2
 echo
@@ -3533,8 +3533,8 @@ echo
 [[ "$sbnh" == "1.10" ]] && blue "当前Sing-box内核支持geosite分流方式" || blue "当前Sing-box内核不支持geosite分流方式，仅支持分流2、3、5、6选项"
 echo
 yellow "注意："
-yellow "一、完整域名方式只能填完整域名 (例：谷歌网站填写：www.google.com)"
-yellow "二、geosite方式须填写geosite规则名 (例：奈飞填写:netflix ；迪士尼填写:disney ；ChatGPT填写:openai ；全局且绕过中国填写:geolocation-!cn)"
+yellow "一、后缀域名方式只能填域名 (例：谷歌网站填写：google.com googleapis.com)"
+yellow "二、geosite方式须填写geosite规则名 (例：奈飞填写netflix ；迪士尼填写disney ；ChatGPT填写openai ；全局且绕过中国填写geolocation-!cn)"
 yellow "三、同一个完整域名或者geosite切勿重复分流"
 yellow "四、如分流通道中有个别通道无网络，所填分流为黑名单模式，即屏蔽该网站访问"
 changef
@@ -3557,9 +3557,9 @@ readp "请选择：" menu
 
 if [ "$menu" = "1" ]; then
 if [[ "$sbnh" == "1.10" ]]; then
-readp "1：使用完整域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
+readp "1：使用后缀域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
 if [ "$menu" = "1" ]; then
-readp "每个域名之间留空格，回车跳过表示重置清空warp-wireguard-ipv4的完整域名方式的分流通道)：" w4flym
+readp "每个域名之间留空格，回车跳过表示重置清空warp-wireguard-ipv4的后缀域名方式的分流通道)：" w4flym
 if [ -z "$w4flym" ]; then
 w4flym='"yg_kkk"'
 else
@@ -3588,9 +3588,9 @@ yellow "遗憾！当前暂时只支持warp-wireguard-ipv6，如需要warp-wiregu
 fi
 
 elif [ "$menu" = "2" ]; then
-readp "1：使用完整域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
+readp "1：使用后缀域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
 if [ "$menu" = "1" ]; then
-readp "每个域名之间留空格，回车跳过表示重置清空warp-wireguard-ipv6的完整域名方式的分流通道：" w6flym
+readp "每个域名之间留空格，回车跳过表示重置清空warp-wireguard-ipv6的后缀域名方式的分流通道：" w6flym
 if [ -z "$w6flym" ]; then
 w6flym='"yg_kkk"'
 else
@@ -3623,9 +3623,9 @@ changef
 fi
 
 elif [ "$menu" = "3" ]; then
-readp "1：使用完整域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
+readp "1：使用后缀域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
 if [ "$menu" = "1" ]; then
-readp "每个域名之间留空格，回车跳过表示重置清空warp-socks5-ipv4的完整域名方式的分流通道：" s4flym
+readp "每个域名之间留空格，回车跳过表示重置清空warp-socks5-ipv4的后缀域名方式的分流通道：" s4flym
 if [ -z "$s4flym" ]; then
 s4flym='"yg_kkk"'
 else
@@ -3659,9 +3659,9 @@ fi
 
 elif [ "$menu" = "4" ]; then
 if [[ "$sbnh" == "1.10" ]]; then
-readp "1：使用完整域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
+readp "1：使用后缀域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
 if [ "$menu" = "1" ]; then
-readp "每个域名之间留空格，回车跳过表示重置清空warp-socks5-ipv6的完整域名方式的分流通道：" s6flym
+readp "每个域名之间留空格，回车跳过表示重置清空warp-socks5-ipv6的后缀域名方式的分流通道：" s6flym
 if [ -z "$s6flym" ]; then
 s6flym='"yg_kkk"'
 else
@@ -3691,9 +3691,9 @@ fi
 
 elif [ "$menu" = "5" ]; then
 if [[ "$sbnh" == "1.10" ]]; then
-readp "1：使用完整域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
+readp "1：使用后缀域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
 if [ "$menu" = "1" ]; then
-readp "每个域名之间留空格，回车跳过表示重置清空VPS本地ipv4的完整域名方式的分流通道：" ad4flym
+readp "每个域名之间留空格，回车跳过表示重置清空VPS本地ipv4的后缀域名方式的分流通道：" ad4flym
 if [ -z "$ad4flym" ]; then
 ad4flym='"yg_kkk"'
 else
@@ -3727,9 +3727,9 @@ fi
 
 elif [ "$menu" = "6" ]; then
 if [[ "$sbnh" == "1.10" ]]; then
-readp "1：使用完整域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
+readp "1：使用后缀域名方式\n2：使用geosite方式\n3：返回上层\n请选择：" menu
 if [ "$menu" = "1" ]; then
-readp "每个域名之间留空格，回车跳过表示重置清空VPS本地ipv6的完整域名方式的分流通道：" ad6flym
+readp "每个域名之间留空格，回车跳过表示重置清空VPS本地ipv6的后缀域名方式的分流通道：" ad6flym
 if [ -z "$ad6flym" ]; then
 ad6flym='"yg_kkk"'
 else
