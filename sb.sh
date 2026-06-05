@@ -1036,6 +1036,9 @@ fi
 ym=$(cat /root/ygkkkca/ca.log 2>/dev/null)
 hy2_sniname=$(sed 's://.*::g' /etc/s-box/sb.json | jq -r '.inbounds[2].tls.key_path')
 if [[ "$hy2_sniname" = '/etc/s-box/private.key' ]]; then
+SHA256=$(openssl x509 -fingerprint -noout -sha256 -in /etc/s-box/cert.pem 2>/dev/null | awk -F= '{print $NF}' | sed 's/:/%3A/g')
+echo "$SHA256" > /etc/s-box/SHA256.txt
+SHA256=$(cat /etc/s-box/SHA256.txt)
 hy2_name=www.bing.com
 sb_hy2_ip=$server_ip
 cl_hy2_ip=$server_ipcl
@@ -1154,7 +1157,8 @@ echo
 reshy2(){
 echo
 white "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-hy2_link="hysteria2://$uuid@$sb_hy2_ip:$hy2_port?security=tls&alpn=h3&insecure=$ins_hy2&allowInsecure=$ins_hy2$hyps&sni=$hy2_name#hy2-$hostname"
+hy2_link="hysteria2://$uuid@$sb_hy2_ip:$hy2_port?security=tls&alpn=h3&insecure=0&allowInsecure=0$hyps&sni=$hy2_name&pinSHA256=$SHA256#hy2-$hostname"
+#hy2_link="hysteria2://$uuid@$sb_hy2_ip:$hy2_port?security=tls&alpn=h3&insecure=$ins_hy2&allowInsecure=$ins_hy2$hyps&sni=$hy2_name#hy2-$hostname"
 echo "$hy2_link" > /etc/s-box/hy2.txt
 red "🚀【 Hysteria-2 】节点信息如下：" && sleep 2
 echo
