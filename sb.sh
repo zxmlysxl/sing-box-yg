@@ -1036,7 +1036,7 @@ fi
 ym=$(cat /root/ygkkkca/ca.log 2>/dev/null)
 hy2_sniname=$(sed 's://.*::g' /etc/s-box/sb.json | jq -r '.inbounds[2].tls.key_path')
 if [[ "$hy2_sniname" = '/etc/s-box/private.key' ]]; then
-SHA256=$(openssl x509 -fingerprint -noout -sha256 -in /etc/s-box/cert.pem 2>/dev/null | awk -F= '{print $NF}' | sed 's/:/%3A/g')
+SHA256=$(openssl x509 -in /etc/s-box/cert.pem -outform DER | sha256sum | awk '{print $1}')
 echo "$SHA256" > /etc/s-box/SHA256.txt
 SHA256=$(cat /etc/s-box/SHA256.txt)
 hy2_name=www.bing.com
@@ -4327,7 +4327,7 @@ green "11. 一键原版BBR+FQ加速"
 green "12. 管理 Acme 申请域名证书"
 green "13. 管理 Warp 查看Netflix/ChatGPT解锁情况"
 green "14. 添加 WARP-plus-Socks5 代理模式 【本地Warp/多地区Psiphon-VPN】"
-green "15. 刷新本地IP、调整IPV4/IPV6配置输出"
+green "15. 更换IP刷新本地IP、调整IPV4/IPV6配置输出"
 white "----------------------------------------------------------------------------------"
 green "16. Sing-box-yg脚本使用说明书"
 white "----------------------------------------------------------------------------------"
