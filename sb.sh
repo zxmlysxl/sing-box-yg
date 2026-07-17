@@ -1336,6 +1336,11 @@ cat <<EOF
         "final": "proxyDns",
         "strategy": "prefer_ipv4"
     },
+	  "http_clients": [
+    {
+      "tag": "http-client-direct"
+    }
+    ],
     "inbounds": [
         {
             "type": "tun",
@@ -1396,18 +1401,17 @@ cat <<EOF
                 "tag": "geosite-cn",
                 "type": "remote",
                 "format": "binary",
-                "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-cn.srs",
-                "download_detour": "direct"
+                "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-cn.srs"
             },
             {
                 "tag": "geoip-cn",
                 "type": "remote",
                 "format": "binary",
-                "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
-                "download_detour": "direct"
+                "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs"
             }
         ],
         "final": "proxy",
+        "default_http_client": "http-client-direct",
         "auto_detect_interface": true,
         "default_domain_resolver": {
             "server": "aliDns"
