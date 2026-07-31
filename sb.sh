@@ -2401,6 +2401,10 @@ if [ "$menu" = "1" ]; then
 cloudflaredargo
 readp "输入Argo固定隧道Token: " argotoken
 readp "输入Argo固定隧道域名: " argoym
+vm_port=$(sed 's://.*::g' /etc/s-box/sb.json | jq -r '.inbounds[1].listen_port')
+echo
+yellow "注意！Zero Trust设置固定隧道URL端口填写Vmess端口：localhost:$vm_port"
+echo
 pid=$(ps -ef 2>/dev/null | awk '/[c]loudflared.*run/ {print $2}')
 [ -n "$pid" ] && kill -9 "$pid" >/dev/null 2>&1
 echo
@@ -2442,9 +2446,9 @@ fi
 fi
 echo ${argoym} > /etc/s-box/sbargoym.log
 echo ${argotoken} > /etc/s-box/sbargotoken.log
-argo=$(cat /etc/s-box/sbargoym.log 2>/dev/null)
+argosh=$(cat /etc/s-box/sbargoym.log 2>/dev/null)
 sbshare > /dev/null 2>&1
-blue "Argo固定隧道设置完成，固定域名：$argo"
+blue "Argo固定隧道设置完成，固定域名：$argosh"
 elif [ "$menu" = "2" ]; then
 if pidof systemd >/dev/null 2>&1; then
 systemctl stop argo >/dev/null 2>&1
@@ -3179,8 +3183,8 @@ green "推荐使用稳定的世界大厂或组织的官方CDN域名作为CDN优�
 blue "cloudflare-ech.com"
 blue "www.visa.com.sg"
 blue "www.wto.org"
-blue "www.web.com"
-blue "yg1.ygkkk.dpdns.org (yg1中的1，可换为1-13中任意数字，甬哥维护)"
+blue "www.shopify.com"
+blue "yg1.ygkkk.dpdns.org (yg1中的1，可换为1-13中任意数字)"
 echo
 yellow "1：自定义Vmess-ws(tls)主协议节点的CDN优选地址"
 yellow "2：针对选项1，重置客户端host/sni域名(IP解析到CF上的域名)"
