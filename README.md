@@ -49,6 +49,15 @@ bash <(wget -qO- https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb
 bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh)
 ```
 
+一键快捷命令现实本地IP订阅：```printf '3\n8\n1\n订阅密码' | sb```
+
+一键快捷命令现实Argo临时隧道：```printf '3\n3\n1\n1' | sb```
+
+一键快捷命令现实Argo固定隧道：```printf '3\n3\n2\n1\n固定密钥\n固定域名' | sb```
+
+一键快捷命令现实域名分流：```printf '5\n2\n1\n后缀域名1 后缀域名2' | sb```
+
+
 ### Sing-box-yg脚本界面预览图（注：相关参数随意填写，仅供围观）
 
 ![1d5425c093618313888fe41a55f493f](https://github.com/user-attachments/assets/2b4b04a6-2de4-499a-afa1-ed78bccc50a8)
