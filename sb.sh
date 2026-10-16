@@ -76,8 +76,7 @@ cd
 fi
 if [ -x "$(command -v apt-get)" ]; then
 apt update -y
-apt install jq cron socat busybox iptables-persistent coreutils util-linux systemd-resolved -y
-systemctl enable --now systemd-resolved
+apt install jq cron socat busybox iptables-persistent coreutils util-linux -y
 elif [ -x "$(command -v yum)" ]; then
 yum update -y && yum install epel-release -y
 yum install jq socat busybox coreutils util-linux -y
@@ -1334,7 +1333,6 @@ cat <<EOF
       ],
       "auto_route": true,
       "strict_route": true,
-      "stack": "gvisor",
       "mtu": 1420
     }
   ],
